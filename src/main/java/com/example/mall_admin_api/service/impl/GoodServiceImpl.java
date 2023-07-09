@@ -17,6 +17,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.lang.System.in;
+
 /**
 * @author Ming
 * @description 针对表【good】的数据库操作Service实现
@@ -100,11 +102,17 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good>
 
     @Override
     public String getMaxBatch(String name) {
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyMMdd");
+        String ds = sdf.format(date);
+
         LambdaQueryWrapper<Good> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper
                 .eq(Good::getName, name)
+                .likeRight(Good::getBatch, ds)
                 .orderByDesc(Good::getBatch);
         List<Good> goods = goodMapper.selectList(queryWrapper);
+        if (goods.size() == 0) { return ds + "00"; }
         return goods.get(0).getBatch();
     }
 
@@ -114,7 +122,13 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good>
     public Boolean addGood(String code, String name, String type, String characteristic, String batch, String pic, String stock, String buyPrice, String standardPrice, String currentPrice, String createDate, String deadline) {
         Good newGood = null;
         try {
-            newGood = new Good(UUID.randomUUID().toString(), code,name,type,Integer.parseInt(characteristic),batch,pic,Integer.parseInt(stock), new BigDecimal(buyPrice),new BigDecimal(standardPrice),new BigDecimal(currentPrice),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createDate),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deadline));
+            if (Integer.parseInt(characteristic) == 1) {
+                newGood = new Good(UUID.randomUUID().toString(), code,name,type,Integer.parseInt(characteristic),batch,pic,Integer.parseInt(stock), new BigDecimal(buyPrice),new BigDecimal(standardPrice),new BigDecimal(currentPrice),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createDate),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deadline));
+            } else if (Integer.parseInt(characteristic) == 2) {
+                newGood = new Good(UUID.randomUUID().toString(), code,name,type,Integer.parseInt(characteristic),batch,pic,Integer.parseInt(stock), new BigDecimal(buyPrice),new BigDecimal(standardPrice),new BigDecimal(currentPrice),null,null);
+            } else {
+                newGood = new Good(UUID.randomUUID().toString(), code,name,type,Integer.parseInt(characteristic),batch,pic,Integer.parseInt(stock), new BigDecimal(buyPrice),new BigDecimal(standardPrice),new BigDecimal(currentPrice),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createDate),null);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

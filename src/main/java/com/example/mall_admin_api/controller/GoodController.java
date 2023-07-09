@@ -137,6 +137,7 @@ public class GoodController {
             @RequestParam("createDate") String createDate,
             @RequestParam("deadline") String deadline
     ) {
+        System.out.println(createDate  +  deadline);
         Boolean flag = goodService.addGood(code,name,type,characteristic,batch,pic,stock,buyPrice,standardPrice,currentPrice,createDate,deadline);
         if (flag) {
             //返回成功
