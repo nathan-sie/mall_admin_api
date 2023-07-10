@@ -32,7 +32,12 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good>
     private GoodMapper goodMapper;
 
     @Override
-    public List<Good> getAllGood() { return goodMapper.selectList(null); }
+    public List<Good> getAllGood() {
+        LambdaQueryWrapper<Good> queryWrapper = new LambdaQueryWrapper<Good>();
+        queryWrapper
+                .orderByDesc(Good::getBatch);
+        return goodMapper.selectList(queryWrapper);
+    }
 
     @Override
     public Boolean batchDelete(String ids) {
@@ -121,6 +126,7 @@ public class GoodServiceImpl extends ServiceImpl<GoodMapper, Good>
     @Override
     public Boolean addGood(String code, String name, String type, String characteristic, String batch, String pic, String stock, String buyPrice, String standardPrice, String currentPrice, String createDate, String deadline) {
         Good newGood = null;
+        if (currentPrice == null) { currentPrice = "0"; }
         try {
             if (Integer.parseInt(characteristic) == 1) {
                 newGood = new Good(UUID.randomUUID().toString(), code,name,type,Integer.parseInt(characteristic),batch,pic,Integer.parseInt(stock), new BigDecimal(buyPrice),new BigDecimal(standardPrice),new BigDecimal(currentPrice),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createDate),new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(deadline));
