@@ -19,4 +19,6 @@ public interface CategoryService extends IService<Category> {
     Boolean updateCategory(String id, String name);
 
     Boolean batchDelete(String ids);
+
+    List<Category> searchByKeyWord(String keyword);
 }

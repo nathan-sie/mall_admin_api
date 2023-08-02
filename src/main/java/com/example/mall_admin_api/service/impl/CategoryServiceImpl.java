@@ -1,5 +1,6 @@
 package com.example.mall_admin_api.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.mall_admin_api.entity.Admin;
@@ -64,6 +65,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<Category> searchByKeyWord(String keyword) {
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<Category>();
+        queryWrapper
+                .like(Category::getName, keyword);
+        return categoryMapper.selectList(queryWrapper);
     }
 }
 

@@ -1,6 +1,7 @@
 package com.example.mall_admin_api.controller;
 
 import com.example.mall_admin_api.entity.Category;
+import com.example.mall_admin_api.entity.Good;
 import com.example.mall_admin_api.service.CategoryService;
 import com.example.mall_admin_api.utils.Result;
 import com.example.mall_admin_api.utils.ResultGenerator;
@@ -63,6 +64,20 @@ public class CategoryController {
         } else {
             //返回失败
             Result result = ResultGenerator.genFailResult("删除失败");
+            return result;
+        }
+    }
+
+    @GetMapping("/search/{keyword}")
+    public Result<List<Category>> search(@PathVariable("keyword") String keyword) {
+        List<Category> categories = categoryService.searchByKeyWord(keyword);
+        if (categories.size() > 0) {
+            //返回成功
+            Result result = ResultGenerator.genSuccessResult("获取成功", categories);
+            return result;
+        } else {
+            //返回失败
+            Result result = ResultGenerator.genFailResult("获取失败");
             return result;
         }
     }
